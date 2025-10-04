@@ -1,3 +1,66 @@
+
+<!-- ANIMACIÓN INICIAL CON LETRAS ALEATORIAS -->
+<div id="black-screen" style="position:fixed; inset:0; background:black; color:lime; font-family:monospace; font-size:1.2rem; display:flex; align-items:center; justify-content:center; z-index:9999; text-align:center;"></div>
+
+<div id="loading-screen" style="position:fixed; inset:0; background:#2563eb; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9998; color:white;">
+  <div style="width:80%; height:8px; background:rgba(255,255,255,0.3); border-radius:4px; overflow:hidden; margin-top:20px;">
+    <div id="progress" style="width:0; height:100%; background:#1e40af; transition: width 0.05s linear;"></div>
+  </div>
+  <div id="welcome-text" style="font-size:1.5rem; letter-spacing:1px; font-weight:600; margin-top:30px; min-height:2rem; text-align:center; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;"></div>
+</div>
+
+<script>
+  const blackScreen = document.getElementById('black-screen');
+  const loadingScreen = document.getElementById('loading-screen');
+  const welcomeText = document.getElementById('welcome-text');
+  const progressBar = document.getElementById('progress');
+  
+  function randomChar() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    return chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+
+  // Pantalla negra con letras aleatorias
+  let iteration = 0;
+  const blackInterval = setInterval(() => {
+    blackScreen.textContent = '';
+    for(let i=0;i<100;i++){
+      blackScreen.textContent += randomChar();
+    }
+    iteration++;
+    if(iteration > 20){
+      clearInterval(blackInterval);
+      blackScreen.style.display='none';
+      startLoading();
+    }
+  },50);
+
+  // Barra + letras de bienvenida
+  function startLoading(){
+    loadingScreen.style.display='flex';
+    let width=0;
+    const targetText = 'WELCOME TO CAIMAN BANK';
+    let displayed = Array(targetText.length).fill(' ');
+
+    const progressInterval = setInterval(()=>{
+      width += 1;
+      progressBar.style.width = width + '%';
+
+      for(let i=0;i<targetText.length;i++){
+        if(displayed[i] !== targetText[i]){
+          displayed[i] = Math.random() < width/100 ? targetText[i] : randomChar();
+        }
+      }
+      welcomeText.textContent = displayed.join('');
+
+      if(width>=100){
+        clearInterval(progressInterval);
+        loadingScreen.style.display='none';
+        document.querySelector('main').style.display='block';
+      }
+    },50);
+  }
+</script>
 <!DOCTYPE html><html lang="es">
 <head>
   <meta charset="UTF-8" />
